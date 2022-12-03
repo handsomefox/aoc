@@ -1,21 +1,49 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"math"
+	"strings"
+)
 
-func SolveB(input string) string {
-	var floor int
-	for i, v := range input {
-		switch v {
-		case '(':
-			floor++
-		case ')':
-			floor--
-		}
-
-		if floor == -1 {
-			return fmt.Sprint(i + 1)
+func Min(nums ...int) (min int) {
+	if len(nums) == 0 {
+		return 0
+	}
+	min = math.MaxInt
+	for _, num := range nums {
+		if num < min {
+			min = num
 		}
 	}
+	return min
+}
 
-	return ""
+func ribbon(l, w, h int) int {
+	p1 := 2 * (l + w)
+	p2 := 2 * (l + h)
+	p3 := 2 * (w + h)
+	return Min(p1, p2, p3) + (l * w * h)
+}
+
+func SolveB(input string) string {
+	var (
+		sc    = bufio.NewScanner(strings.NewReader(input))
+		total = 0
+	)
+	for sc.Scan() {
+		var (
+			text  = sc.Text()
+			split = strings.Split(text, "x")
+		)
+		var (
+			l = tryAtoi(split[0])
+			w = tryAtoi(split[1])
+			h = tryAtoi(split[2])
+		)
+		total += ribbon(l, w, h)
+	}
+
+	return fmt.Sprint(total)
 }
