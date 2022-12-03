@@ -6,6 +6,12 @@
 make run y=$YEAR d=$DAY
 ```
 
+or to run all:
+
+```bash
+make all
+```
+
 ## How to add a new year/day
 
 ```bash
