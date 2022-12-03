@@ -24,13 +24,13 @@ func main() {
 		return nil
 	})
 
-	for _, path := range paths {
+	for _, p := range paths {
 		cmd := exec.Command("go", "run", ".")
-		cmd.Dir = path
+		cmd.Dir = p
 		cmd.Stdout = os.Stdout
 		cmd.Stdin = os.Stdin
 
-		fmt.Println("Executing: ", path+"\\main.go")
+		fmt.Println("Executing: ", p)
 		err := cmd.Run()
 		if err != nil {
 			fmt.Println("err: ", err)
