@@ -45,11 +45,13 @@ func FindFirstUnique(inCh <-chan string) int {
 }
 
 func Solve(input string, length int) string {
-	c := make(chan string)
+	c := make(chan string, 10)
 	quitCh := make(chan struct{})
 
 	go GetAllSubstrs(input, length, c, quitCh)
 
 	i := FindFirstUnique(c)
+	quitCh <- struct{}{}
+
 	return fmt.Sprint(i)
 }
