@@ -44,8 +44,8 @@ func IsTreeVisible2(treeX, treeY int, patches [][]int) int {
 
 func walk2(treeX, treeY int, patches [][]int) int {
 	// 4 directions to walk
-	// If the tree is visible in at least one of them,
-	// return immediately.
+	// we have to count the amount of trees
+	// you can see in each direction.
 	tree := patches[treeY][treeX]
 	visibleTrees := make([]int, 0, 4) // amount of visible trees in each direction
 	for i := 0; i < 4; i++ {
