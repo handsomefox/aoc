@@ -46,13 +46,13 @@ func getNumsB(input string) int {
 		}
 	}
 
-	for k := range valid {
+	for k, v := range valid {
 		first, last := strings.Index(input, k), strings.LastIndex(input, k)
 		if first != -1 {
-			pos[first] = valid[k]
+			pos[first] = v
 		}
 		if last != -1 {
-			pos[last] = valid[k]
+			pos[last] = v
 		}
 	}
 
