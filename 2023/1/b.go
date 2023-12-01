@@ -3,29 +3,21 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"sort"
 	"strings"
-	"unicode"
 )
 
 func SolveB(input string) string {
 	sc := bufio.NewScanner(strings.NewReader(input))
 
-	nums := make([]int, 0)
-	for sc.Scan() {
-		txt := sc.Text()
-		nums = append(nums, getNumsB(txt))
-	}
-
 	sum := 0
-	for _, num := range nums {
-		sum += num
+	for sc.Scan() {
+		sum += getNumsB(sc.Text())
 	}
 
 	return fmt.Sprint(sum)
 }
 
-var valid = map[string]string{
+var numberLookupTable = map[string]string{
 	"one":   "1",
 	"two":   "2",
 	"three": "3",
@@ -35,40 +27,36 @@ var valid = map[string]string{
 	"seven": "7",
 	"eight": "8",
 	"nine":  "9",
+	"1":     "1",
+	"2":     "2",
+	"3":     "3",
+	"4":     "4",
+	"5":     "5",
+	"6":     "6",
+	"7":     "7",
+	"8":     "8",
+	"9":     "9",
 }
 
 func getNumsB(input string) int {
-	str := ""
-	pos := make(map[int]string)
-	for i, r := range input {
-		if unicode.IsDigit(r) && r != '0' {
-			pos[i] = string(r)
-		}
-	}
+	var (
+		firstIndex = len(input)
+		lastIndex  = -1
+		firstValue = ""
+		lastValue  = ""
+	)
 
-	for k, v := range valid {
+	for k, v := range numberLookupTable {
 		first, last := strings.Index(input, k), strings.LastIndex(input, k)
-		if first != -1 {
-			pos[first] = v
+		if first != -1 && first < firstIndex {
+			firstIndex = first
+			firstValue = v
 		}
-		if last != -1 {
-			pos[last] = v
+		if last != -1 && last > lastIndex {
+			lastIndex = last
+			lastValue = v
 		}
 	}
 
-	arr := make([]int, 0)
-	for k := range pos {
-		arr = append(arr, k)
-	}
-	sort.IntSlice(arr).Sort()
-
-	if len(arr) >= 2 {
-		str = pos[arr[0]] + pos[arr[len(arr)-1]]
-	} else if len(arr) == 1 {
-		str = pos[arr[0]] + pos[arr[0]]
-	} else {
-		return 0
-	}
-
-	return MustParse(str)
+	return MustParse(firstValue + lastValue)
 }
