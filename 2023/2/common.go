@@ -23,19 +23,12 @@ type (
 	Round struct {
 		Red, Green, Blue uint8
 	}
-	MinimalAmountOfCubes struct {
-		Red, Green, Blue uint8
-	}
 )
-
-func (m MinimalAmountOfCubes) Power() int {
-	return int(m.Red) * int(m.Green) * int(m.Blue)
-}
 
 func calculateGame(input string) Game {
 	str, _ := strings.CutPrefix(input, "Game ") // Remove game prefix
-	split := strings.Split(str, ": ")           // [0] == ID of the game, [1] == Game rounds
-
+	split := strings.Split(str, ": ")
+	// [0] == ID of the game, [1] == Game rounds
 	id := MustParse(split[0])
 	rounds := strings.Split(split[1], "; ") // Every round is split up by ;
 
@@ -44,26 +37,20 @@ func calculateGame(input string) Game {
 		Rounds:   make([]Round, 0),
 		Possible: false,
 	}
-
 	// fmt.Printf("GameID: %d\nRounds: %#v\n", id, rounds)
-
 	for i := 0; i < len(rounds); i++ {
 		round := parseRounds(rounds[i])
 		game.Rounds = append(game.Rounds, round)
 	}
-
 	game.Power = gamePower(game.Rounds)
 	game.Possible = isPossible(game.Rounds)
-
 	// fmt.Printf("Game %d: %d\n", game.ID, game.Power)
-
 	return game
 }
 
 func parseRounds(input string) Round {
 	cubes := strings.Split(input, ", ") // Every cube is split by ,
 	// fmt.Printf("Cubes: %#v\n", cubes)
-
 	r := Round{}
 	for i := 0; i < len(cubes); i++ {
 		redCube := strings.Split(cubes[i], " red")
@@ -80,44 +67,26 @@ func parseRounds(input string) Round {
 			r.Blue = uint8(MustParse(blueCube[0]))
 		}
 	}
-
 	// fmt.Printf("Round: %#v\n", r)
-
 	return r
 }
 
 func gamePower(rounds []Round) int {
-	min := MinimalAmountOfCubes{}
-
+	var minRed, minGreen, minBlue uint8
 	for _, r := range rounds {
-		if r.Red > min.Red {
-			min.Red = r.Red
-		}
-		if r.Green > min.Green {
-			min.Green = r.Green
-		}
-		if r.Blue > min.Blue {
-			min.Blue = r.Blue
-		}
+		minRed = max(r.Red, minRed)
+		minGreen = max(r.Green, minGreen)
+		minBlue = max(r.Blue, minBlue)
 	}
-
-	return min.Power()
+	return int(minRed) * int(minGreen) * int(minBlue)
 }
 
 func isPossible(rounds []Round) bool {
 	for _, r := range rounds {
-
-		if r.Red > MaxRed {
-			return false
-		}
-		if r.Green > MaxGreen {
-			return false
-		}
-		if r.Blue > MaxBlue {
+		if r.Red > MaxRed || r.Green > MaxGreen || r.Blue > MaxBlue {
 			return false
 		}
 	}
-
 	return true
 }
 
