@@ -3,7 +3,6 @@ package main
 import (
 	"math"
 	"slices"
-	"strconv"
 	"strings"
 )
 
@@ -23,12 +22,4 @@ func parseCard(s string) (points, matches int) {
 	actual := strings.Fields(numbers[1])
 
 	return pointsAndMatches(winning, actual)
-}
-
-func MustParse(s string) int {
-	i, err := strconv.Atoi(s)
-	if err != nil {
-		panic(err)
-	}
-	return i
 }
