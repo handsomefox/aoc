@@ -12,12 +12,16 @@ func SolveA(input string) string {
 		symbols = make([]Symbol, 0)
 		nums    = make(map[Point]Value)
 	)
+
 	for y := 0; sc.Scan(); y++ {
 		txt := sc.Text()
+
 		// Get symbols
 		symbols = append(symbols, parseSymbols(txt, y)...)
+
 		// Get numbers
 		for _, num := range parseNums(txt, y) {
+			// Add them to the map at every position they could be hit at
 			for _, p := range num.Points {
 				nums[p] = num.Value
 			}
@@ -34,11 +38,9 @@ func SolveA(input string) string {
 			{X: symbol.X - 1, Y: symbol.Y - 1},
 			{X: symbol.X - 1, Y: symbol.Y},
 			{X: symbol.X - 1, Y: symbol.Y + 1},
-
 			// Above and below the symbol
 			{X: symbol.X, Y: symbol.Y - 1},
 			{X: symbol.X, Y: symbol.Y + 1},
-
 			// Right side of the symbol
 			{X: symbol.X + 1, Y: symbol.Y - 1},
 			{X: symbol.X + 1, Y: symbol.Y},
