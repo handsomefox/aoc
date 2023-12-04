@@ -1,53 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"slices"
 	"strconv"
 	"strings"
 )
 
-type Card struct {
-	Actual  []int
-	Winning []int
-	Number  int
-}
-
-func (c Card) String() string {
-	return fmt.Sprintf("Card #%d: winning{%v} actual{%v}", c.Number, c.Winning, c.Actual)
-}
-
-func (c Card) Points() int {
-	contained := 0
-	for _, actual := range c.Actual {
-		if slices.Contains(c.Winning, actual) {
-			contained++
+func pointsAndMatches(winning, actual []string) (points, matches int) {
+	matched := 0
+	for _, num := range actual {
+		if slices.Contains(winning, num) {
+			matched++
 		}
 	}
-	return int(math.Pow(2, float64(contained-1)))
+	return int(math.Pow(2, float64(matched-1))), matched
 }
 
-func (c Card) Matches() int {
-	contained := 0
-	for _, actual := range c.Actual {
-		if slices.Contains(c.Winning, actual) {
-			contained++
-		}
-	}
-	return contained
-}
+func parseCard(s string) (points, matches int) {
+	numbers := strings.Split(strings.Split(s, ": ")[1], " | ")
+	winning := strings.Fields(numbers[0])
+	actual := strings.Fields(numbers[1])
 
-func parseNumbers(s string) []int {
-	nums := make([]int, 0)
-	s = strings.ReplaceAll(s, "  ", " ")
-	s = strings.TrimSpace(s)
-
-	for _, s := range strings.Split(s, " ") {
-		nums = append(nums, MustParse(strings.TrimSpace(s)))
-	}
-
-	return nums
+	return pointsAndMatches(winning, actual)
 }
 
 func MustParse(s string) int {
