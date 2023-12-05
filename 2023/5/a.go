@@ -8,31 +8,30 @@ import (
 
 func SolveA(input string) string {
 	var (
-		split = strings.Split(input, "\n\n")
-		seeds = ParseSeeds(split)    // Seeds to plant
-		maps  = ParseMaps(split[1:]) // Maps to use
+		split  = strings.Split(input, "\n\n")
+		seeds  = ParseSeeds(split)    // Seeds to plant
+		ranges = ParseMaps(split[1:]) // Maps to use
 	)
 
 	lowest := math.MaxInt
-	for _, s := range seeds {
-		lowest = min(SeedToLocation(s, maps), lowest)
+	for i := 0; i < len(seeds); i++ {
+		lowest = min(SeedToLocation(seeds[i], ranges), lowest)
 	}
 
 	return fmt.Sprint(lowest)
 }
 
-func SeedToLocation(seed int, maps map[MapType][]Range) int {
-	prev := seed
-	for _, t := range MapTypes {
-		value := MapValue(prev, maps[t])
-		prev = value
+func SeedToLocation(seed int, ranges [][]Range) int {
+	value := seed
+	for i := 0; i < len(ranges); i++ {
+		value = MapValue(value, ranges[i])
 	}
-	return prev
+	return value
 }
 
 func MapValue(value int, rng []Range) int {
-	for _, r := range rng {
-		if v, ok := r.SourceToDest(value); ok {
+	for i := 0; i < len(rng); i++ {
+		if v, ok := rng[i].SourceToDest(value); ok {
 			return v
 		}
 	}

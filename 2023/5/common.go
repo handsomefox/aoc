@@ -17,21 +17,6 @@ const (
 	HumidityToLocation    MapType = "humidity-to-location"
 )
 
-var MapTypes []MapType = []MapType{
-	SeedToSoil,
-	SoilToFertilizer,
-	FertilizerToWater,
-	WaterToLight,
-	LightToTemperature,
-	TemperatureToHumidity,
-	HumidityToLocation,
-}
-
-type Map struct {
-	Type   MapType
-	Ranges []Range
-}
-
 type Range struct {
 	Destination, Source, Length int
 }
@@ -58,10 +43,9 @@ func (r Range) DestToSource(dest int) (int, bool) {
 	return 0, false
 }
 
-func NewMap(input string) Map {
+func NewMap(input string) []Range {
 	// First line is guaranteed to be something like soil-to-fertilizer map:
 	lines := strings.Split(input, "\n")
-	mapType, _ := strings.CutSuffix(lines[0], " map:")
 	lines = lines[1:] // Remove the line with the map type
 
 	ranges := make([]Range, 0)
@@ -80,10 +64,7 @@ func NewMap(input string) Map {
 		})
 	}
 
-	return Map{
-		Type:   MapType(mapType),
-		Ranges: ranges,
-	}
+	return ranges
 }
 
 func ParseSeeds(inputs []string) []int {
@@ -94,11 +75,10 @@ func ParseSeeds(inputs []string) []int {
 	return seeds
 }
 
-func ParseMaps(inputs []string) map[MapType][]Range {
-	maps := make(map[MapType][]Range)
+func ParseMaps(inputs []string) [][]Range {
+	maps := make([][]Range, 0)
 	for _, s := range inputs {
-		m := NewMap(s)
-		maps[m.Type] = m.Ranges
+		maps = append(maps, NewMap(s))
 	}
 	return maps
 }
@@ -108,5 +88,5 @@ func MustParse(s string) int {
 	if err != nil {
 		panic(err)
 	}
-	return i
+	return int(i)
 }
