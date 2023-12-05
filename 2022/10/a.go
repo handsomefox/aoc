@@ -17,4 +17,3 @@ func SolveA(input string) string {
 	cpu.Run(false)
 	return fmt.Sprint(cpu.SignalStrength())
 }
-
