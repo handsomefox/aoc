@@ -5,18 +5,6 @@ import (
 	"strings"
 )
 
-type MapType string
-
-const (
-	SeedToSoil            MapType = "seed-to-soil"
-	SoilToFertilizer      MapType = "soil-to-fertilizer"
-	FertilizerToWater     MapType = "fertilizer-to-water"
-	WaterToLight          MapType = "water-to-light"
-	LightToTemperature    MapType = "light-to-temperature"
-	TemperatureToHumidity MapType = "temperature-to-humidity"
-	HumidityToLocation    MapType = "humidity-to-location"
-)
-
 type Range struct {
 	Destination, Source, Length int
 }
