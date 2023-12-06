@@ -7,10 +7,16 @@ import (
 
 func SolveB(input string) string {
 	split := strings.Split(input, "\n")
-	time := strings.ReplaceAll(strings.Split(split[0], "Time: ")[1], " ", "")
-	distance := strings.ReplaceAll(strings.Split(split[1], "Distance: ")[1], " ", "")
+	time := ParseFieldsB(split[0], "Time: ")
+	distance := ParseFieldsB(split[1], "Distance: ")
 
-	wins := len(WinningNums(MustParse(time), MustParse(distance)))
+	wins := AmountOfWinningNumbers(time, distance)
 
 	return fmt.Sprint(wins)
+}
+
+func ParseFieldsB(s string, prefix string) int {
+	nums := strings.Split(s, prefix)[1]
+	nums = strings.ReplaceAll(nums, " ", "")
+	return MustParse(nums)
 }
