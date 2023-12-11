@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+type Coord struct {
+	R, C int
+}
+
 func Solve(input string, scale int) string {
 	grid := Lines(input)
 
