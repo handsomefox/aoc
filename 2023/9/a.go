@@ -4,20 +4,20 @@ import (
 	"fmt"
 )
 
-func extrapolate(h []int, backwards bool) int {
-	if All(h, func(i int) bool { return i == 0 }) {
+func extrapolate(slice []int, backwards bool) int {
+	if All(slice, func(i int) bool { return i == 0 }) {
 		return 0
 	}
 
-	deltas := Map(Zip(h, h[1:]), func(z Zipped[int]) int {
+	deltas := Map(Zip(slice, slice[1:]), func(z Zipped[int]) int {
 		return z.Second - z.First
 	})
 	diff := extrapolate(deltas, backwards)
 
 	if backwards {
-		return h[0] - diff
+		return slice[0] - diff
 	}
-	return h[len(h)-1] + diff
+	return slice[len(slice)-1] + diff
 }
 
 func SolveA(input string) string {
