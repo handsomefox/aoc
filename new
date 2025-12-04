@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+  echo "usage: new <year/day>" >&2
+  exit 1
+fi
+
+spec=$1
+shift || true
+
+year=${spec%%/*}
+day=${spec##*/}
+if [[ $day == 0* ]]; then
+  day=${day#0}
+fi
+
+if ! [[ $year =~ ^[0-9]{4}$ ]]; then
+  echo "year must be four digits" >&2
+  exit 1
+fi
+if ! [[ $day =~ ^[0-9]+$ ]]; then
+  echo "day must be a number" >&2
+  exit 1
+fi
+
+root="${year}/${day}"
+mkdir -p "$root"
+
+main="$root/main.go"
+if [[ -f $main ]]; then
+  echo "main.go already exists at $root; leaving it alone" >&2
+else
+cat <<'TEMPLATE' | sed "s/{{YEAR}}/$year/; s/{{DAY}}/$day/" > "$main"
+package main
+
+import (
+    "fmt"
+
+    "aoc/shared"
+)
+
+const (
+    year = {{YEAR}}
+    day  = {{DAY}}
+)
+
+func main() {
+    input := shared.MustReadInput(year, day)
+
+    fmt.Println("Part A:", PartA(input))
+    fmt.Println("Part B:", PartB(input))
+}
+
+func PartA(input string) string {
+    // TODO: implement Part A solution
+    return ""
+}
+
+func PartB(input string) string {
+    // TODO: implement Part B solution
+    return ""
+}
+TEMPLATE
+  gofmt -w "$main"
+  echo "created $main"
+fi
+
+sample="$root/sample.txt"
+if [[ ! -f $sample ]]; then
+  echo "# add puzzle sample here" > "$sample"
+  echo "created $sample"
+fi
+
+input="$root/input.txt"
+if [[ ! -f $input ]]; then
+  echo "# paste real puzzle input here" > "$input"
+  echo "created $input (ignored by git)"
+fi
