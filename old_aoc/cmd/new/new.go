@@ -55,6 +55,10 @@ func main() {
 	}
 	fmt.Println(string(b))
 
+	if err := os.Remove(path.Join(p, "go.mod")); err != nil {
+		panic(err)
+	}
+
 	cmd = exec.Command("go", "mod", "init", year+"_"+day)
 	cmd.Dir = p
 	cmd.Stdin = os.Stdin

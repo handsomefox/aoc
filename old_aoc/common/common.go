@@ -1,4 +1,4 @@
-package main
+package common
 
 import (
 	"bufio"
@@ -35,6 +35,27 @@ type (
 	}
 )
 
+func Int[T Signed](s string) T {
+	return T(Must2(strconv.ParseInt(s, 10, 64)))
+}
+
+func Lines(input string) <-chan string {
+	c := make(chan string)
+	go func() {
+		defer close(c)
+		sc := bufio.NewScanner(strings.NewReader(input))
+		for sc.Scan() {
+			text := sc.Text()
+			if text == "" {
+				continue
+			}
+			c <- text
+		}
+	}()
+
+	return c
+}
+
 func All[T any](values []T, condition func(T) bool) bool {
 	for i := range values {
 		if !condition(values[i]) {
@@ -42,15 +63,6 @@ func All[T any](values []T, condition func(T) bool) bool {
 		}
 	}
 	return true
-}
-
-func Lines(input string) []string {
-	sc := bufio.NewScanner(strings.NewReader(input))
-	lines := make([]string, 0)
-	for sc.Scan() {
-		lines = append(lines, sc.Text())
-	}
-	return lines
 }
 
 func MustParseInteger[T Integer](s string) T {
@@ -132,4 +144,38 @@ func SliceCopy[T any](src []T) []T {
 	dst := make([]T, len(src))
 	copy(dst, src)
 	return dst
+}
+
+func Instances[T comparable](s []T, v T) int {
+	count := 0
+	for _, vv := range s {
+		if vv == v {
+			count++
+		}
+	}
+	return count
+}
+
+func Assert(condition bool, message ...string) {
+	if !condition {
+		panic(formatMessage(message...))
+	}
+}
+
+func Must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Must2[T any](v T, err error) T {
+	Must(err)
+	return v
+}
+
+func formatMessage(message ...string) string {
+	if len(message) == 0 {
+		return "assertion failed"
+	}
+	return "assertion failed, " + strings.Join(message, ", ")
 }
