@@ -100,3 +100,9 @@ func Rtoi(r rune) int {
 func Btoi(b byte) int {
 	return MustParseInt(string(b))
 }
+
+func ReplaceAtStringIndex(s string, i int, c byte) string {
+	b := []byte(s)
+	b[i] = c
+	return string(b)
+}
