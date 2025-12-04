@@ -92,3 +92,11 @@ func Reverse(s string) string {
 }
 
 func CeilDiv(n, d int) int { return (n + d - 1) / d }
+
+func Rtoi(r rune) int {
+	return MustParseInt(string(r))
+}
+
+func Btoi(b byte) int {
+	return MustParseInt(string(b))
+}
