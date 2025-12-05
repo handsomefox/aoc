@@ -18,6 +18,15 @@ func init() {
 	UseSample = *sample
 }
 
+type Tuple[T any] struct {
+	First  T
+	Second T
+}
+
+func NewTuple[T any](first, second T) Tuple[T] {
+	return Tuple[T]{first, second}
+}
+
 func MustReadInput(year, day int) string {
 	filename := "input.txt"
 	if UseSample {
@@ -46,6 +55,21 @@ func Lines(input string) <-chan string {
 	return ch
 }
 
+func LinesAsInts(lines []string) []int {
+	return LinesAs(lines, MustParseInt)
+}
+
+func LinesAs[T any](lines []string, transform func(string) T) []T {
+	values := make([]T, len(lines))
+	for i, l := range lines {
+		if l == "" {
+			continue
+		}
+		values[i] = transform(l)
+	}
+	return values
+}
+
 func MustParseInt(s string) int {
 	i, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
@@ -54,8 +78,22 @@ func MustParseInt(s string) int {
 	return int(i)
 }
 
+func Rtoi(r rune) int {
+	return MustParseInt(string(r))
+}
+
+func Btoi(b byte) int {
+	return MustParseInt(string(b))
+}
+
 func String(v any) string {
 	return fmt.Sprintf("%v", v)
+}
+
+func ReplaceAtStringIndex(s string, i int, c byte) string {
+	b := []byte(s)
+	b[i] = c
+	return string(b)
 }
 
 func Map[T any, R any](in []T, f func(value T) R) []R {
@@ -92,17 +130,3 @@ func Reverse(s string) string {
 }
 
 func CeilDiv(n, d int) int { return (n + d - 1) / d }
-
-func Rtoi(r rune) int {
-	return MustParseInt(string(r))
-}
-
-func Btoi(b byte) int {
-	return MustParseInt(string(b))
-}
-
-func ReplaceAtStringIndex(s string, i int, c byte) string {
-	b := []byte(s)
-	b[i] = c
-	return string(b)
-}
