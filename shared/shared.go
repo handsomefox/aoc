@@ -74,6 +74,14 @@ func LinesBackward(input string) <-chan string {
 	return ch
 }
 
+func LinesSlice(input string) (out []string) {
+	return CollectCh(Lines(input))
+}
+
+func LinesBackwardSlice(input string) (out []string) {
+	return CollectCh(LinesBackward(input))
+}
+
 func FieldsInt(input string) []int {
 	fs := strings.Fields(input)
 	out := make([]int, len(fs))
@@ -162,3 +170,11 @@ func Sum[N Number](in []N) N {
 }
 
 func CeilDiv(n, d int) int { return (n + d - 1) / d }
+
+func CollectCh[T any](in <-chan T) []T {
+	out := make([]T, 0, len(in))
+	for v := range in {
+		out = append(out, v)
+	}
+	return out
+}
