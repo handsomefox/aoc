@@ -18,6 +18,12 @@ func init() {
 	UseSample = *sample
 }
 
+type Number interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64 |
+		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
+		~float32 | ~float64
+}
+
 type Tuple[T any] struct {
 	First  T
 	Second T
@@ -53,6 +59,28 @@ func Lines(input string) <-chan string {
 	}()
 
 	return ch
+}
+
+func LinesBackward(input string) <-chan string {
+	ch := make(chan string, 1)
+
+	go func() {
+		defer close(ch)
+		for line := range Lines(Reverse(input)) {
+			ch <- Reverse(line)
+		}
+	}()
+
+	return ch
+}
+
+func FieldsInt(input string) []int {
+	fs := strings.Fields(input)
+	out := make([]int, len(fs))
+	for i, f := range fs {
+		out[i] = MustParseInt(f)
+	}
+	return out
 }
 
 func LinesAsInts(lines []string) []int {
@@ -127,6 +155,10 @@ func Reverse(s string) string {
 		runes[i], runes[j] = runes[j], runes[i]
 	}
 	return string(runes)
+}
+
+func Sum[N Number](in []N) N {
+	return Reduce(in, 0, func(accumulator N, value N) N { return accumulator + value })
 }
 
 func CeilDiv(n, d int) int { return (n + d - 1) / d }
