@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -177,4 +178,12 @@ func CollectCh[T any](in <-chan T) []T {
 		out = append(out, v)
 	}
 	return out
+}
+
+func Sqrt[T Number](n T) float64 {
+	return math.Sqrt(float64(n))
+}
+
+func Pow[T Number](n T, power float64) float64 {
+	return math.Pow(float64(n), power)
 }
